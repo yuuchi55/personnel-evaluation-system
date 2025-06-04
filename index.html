@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>人事評価システム</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>人事評価システム</h1>
+            <nav>
+                <button class="nav-btn active" data-page="evaluation">評価入力</button>
+                <button class="nav-btn" data-page="list">評価一覧</button>
+                <button class="nav-btn" data-page="analysis">分析</button>
+            </nav>
+        </header>
+
+        <main id="content">
+            <!-- 評価入力画面 -->
+            <section id="evaluation" class="page active">
+                <h2>評価入力</h2>
+                <form id="evaluationForm">
+                    <div class="form-group">
+                        <label for="employeeId">社員番号</label>
+                        <input type="text" id="employeeId" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="employeeName">氏名</label>
+                        <input type="text" id="employeeName" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="department">部署</label>
+                        <select id="department" required>
+                            <option value="">選択してください</option>
+                            <option value="営業部">営業部</option>
+                            <option value="技術部">技術部</option>
+                            <option value="人事部">人事部</option>
+                            <option value="経理部">経理部</option>
+                            <option value="マーケティング部">マーケティング部</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="position">職種</label>
+                        <select id="position" required>
+                            <option value="">選択してください</option>
+                            <option value="マネージャー">マネージャー</option>
+                            <option value="リーダー">リーダー</option>
+                            <option value="スタッフ">スタッフ</option>
+                            <option value="アシスタント">アシスタント</option>
+                            <option value="インターン">インターン</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="evaluationPeriod">評価期間</label>
+                        <input type="text" id="evaluationPeriod" placeholder="2024年上期" required>
+                    </div>
+                    
+                    <h3>評価項目</h3>
+                    <div class="evaluation-items">
+                        <div class="evaluation-item">
+                            <label>業績達成度</label>
+                            <div class="rating">
+                                <input type="radio" name="performance" value="5" id="perf5">
+                                <label for="perf5">5</label>
+                                <input type="radio" name="performance" value="4" id="perf4">
+                                <label for="perf4">4</label>
+                                <input type="radio" name="performance" value="3" id="perf3" checked>
+                                <label for="perf3">3</label>
+                                <input type="radio" name="performance" value="2" id="perf2">
+                                <label for="perf2">2</label>
+                                <input type="radio" name="performance" value="1" id="perf1">
+                                <label for="perf1">1</label>
+                            </div>
+                        </div>
+                        
+                        <div class="evaluation-item">
+                            <label>コミュニケーション能力</label>
+                            <div class="rating">
+                                <input type="radio" name="communication" value="5" id="comm5">
+                                <label for="comm5">5</label>
+                                <input type="radio" name="communication" value="4" id="comm4">
+                                <label for="comm4">4</label>
+                                <input type="radio" name="communication" value="3" id="comm3" checked>
+                                <label for="comm3">3</label>
+                                <input type="radio" name="communication" value="2" id="comm2">
+                                <label for="comm2">2</label>
+                                <input type="radio" name="communication" value="1" id="comm1">
+                                <label for="comm1">1</label>
+                            </div>
+                        </div>
+                        
+                        <div class="evaluation-item">
+                            <label>問題解決能力</label>
+                            <div class="rating">
+                                <input type="radio" name="problemSolving" value="5" id="prob5">
+                                <label for="prob5">5</label>
+                                <input type="radio" name="problemSolving" value="4" id="prob4">
+                                <label for="prob4">4</label>
+                                <input type="radio" name="problemSolving" value="3" id="prob3" checked>
+                                <label for="prob3">3</label>
+                                <input type="radio" name="problemSolving" value="2" id="prob2">
+                                <label for="prob2">2</label>
+                                <input type="radio" name="problemSolving" value="1" id="prob1">
+                                <label for="prob1">1</label>
+                            </div>
+                        </div>
+                        
+                        <div class="evaluation-item">
+                            <label>協調性</label>
+                            <div class="rating">
+                                <input type="radio" name="teamwork" value="5" id="team5">
+                                <label for="team5">5</label>
+                                <input type="radio" name="teamwork" value="4" id="team4">
+                                <label for="team4">4</label>
+                                <input type="radio" name="teamwork" value="3" id="team3" checked>
+                                <label for="team3">3</label>
+                                <input type="radio" name="teamwork" value="2" id="team2">
+                                <label for="team2">2</label>
+                                <input type="radio" name="teamwork" value="1" id="team1">
+                                <label for="team1">1</label>
+                            </div>
+                        </div>
+                        
+                        <div class="evaluation-item">
+                            <label>リーダーシップ</label>
+                            <div class="rating">
+                                <input type="radio" name="leadership" value="5" id="lead5">
+                                <label for="lead5">5</label>
+                                <input type="radio" name="leadership" value="4" id="lead4">
+                                <label for="lead4">4</label>
+                                <input type="radio" name="leadership" value="3" id="lead3" checked>
+                                <label for="lead3">3</label>
+                                <input type="radio" name="leadership" value="2" id="lead2">
+                                <label for="lead2">2</label>
+                                <input type="radio" name="leadership" value="1" id="lead1">
+                                <label for="lead1">1</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="comments">コメント</label>
+                        <textarea id="comments" rows="4"></textarea>
+                    </div>
+                    
+                    <button type="submit" class="submit-btn">評価を保存</button>
+                </form>
+            </section>
+
+            <!-- 評価一覧画面 -->
+            <section id="list" class="page">
+                <h2>評価一覧</h2>
+                <div class="filters">
+                    <select id="filterDepartment">
+                        <option value="">全部署</option>
+                        <option value="営業部">営業部</option>
+                        <option value="技術部">技術部</option>
+                        <option value="人事部">人事部</option>
+                        <option value="経理部">経理部</option>
+                        <option value="マーケティング部">マーケティング部</option>
+                    </select>
+                    <select id="filterPosition">
+                        <option value="">全職種</option>
+                        <option value="マネージャー">マネージャー</option>
+                        <option value="リーダー">リーダー</option>
+                        <option value="スタッフ">スタッフ</option>
+                        <option value="アシスタント">アシスタント</option>
+                        <option value="インターン">インターン</option>
+                    </select>
+                    <input type="text" id="filterName" placeholder="氏名で検索">
+                </div>
+                <div id="evaluationList"></div>
+            </section>
+
+            <!-- 分析画面 -->
+            <section id="analysis" class="page">
+                <h2>評価分析</h2>
+                <div class="analysis-container">
+                    <div class="stats-card">
+                        <h3>全体統計</h3>
+                        <div id="overallStats"></div>
+                    </div>
+                    <div class="stats-card">
+                        <h3>部署別平均評価</h3>
+                        <div id="departmentStats"></div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>
