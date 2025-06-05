@@ -155,7 +155,23 @@
 
             <!-- 評価一覧画面 -->
             <section id="list" class="page">
-                <h2>評価一覧</h2>
+                <div class="list-header">
+                    <h2>評価一覧</h2>
+                    <div class="action-buttons">
+                        <button class="action-btn export-btn" onclick="exportToCSV()">
+                            📊 CSV出力
+                        </button>
+                        <button class="action-btn import-btn" onclick="importData()">
+                            📁 データ取込
+                        </button>
+                        <button class="action-btn share-btn" onclick="shareData()">
+                            🔗 共有
+                        </button>
+                        <button class="action-btn print-btn" onclick="printReport()">
+                            🖨️ 印刷
+                        </button>
+                    </div>
+                </div>
                 <div class="filters">
                     <select id="filterDepartment">
                         <option value="">全部署</option>
@@ -176,6 +192,9 @@
                     <input type="text" id="filterName" placeholder="氏名で検索">
                 </div>
                 <div id="evaluationList"></div>
+                
+                <!-- ファイルインポート用の隠し要素 -->
+                <input type="file" id="fileInput" accept=".csv,.json" style="display: none;">
             </section>
 
             <!-- 分析画面 -->

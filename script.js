@@ -411,3 +411,284 @@ function displayAnalysis() {
     
     document.getElementById('departmentStats').innerHTML = deptHtml;
 }
+
+// CSVエクスポート機能
+function exportToCSV() {
+    const evaluations = JSON.parse(localStorage.getItem('evaluations') || '[]');
+    
+    if (evaluations.length === 0) {
+        showSuccessMessage('エクスポートするデータがありません');
+        return;
+    }
+    
+    // CSVヘッダー
+    const headers = [
+        '社員番号', '氏名', '部署', '職種', '評価期間',
+        '業績達成度', 'コミュニケーション', '問題解決能力', '協調性', 'リーダーシップ',
+        '平均評価', 'コメント', '作成日時'
+    ];
+    
+    // CSVデータを作成
+    let csvContent = headers.join(',') + '\n';
+    
+    evaluations.forEach(eval => {
+        const row = [
+            eval.employeeId,
+            `"${eval.employeeName}"`,
+            `"${eval.department}"`,
+            `"${eval.position || ''}"`,
+            `"${eval.evaluationPeriod}"`,
+            eval.performance,
+            eval.communication,
+            eval.problemSolving,
+            eval.teamwork,
+            eval.leadership,
+            eval.averageScore,
+            `"${(eval.comments || '').replace(/"/g, '""')}"`,
+            `"${new Date(eval.createdAt).toLocaleString('ja-JP')}"`
+        ];
+        csvContent += row.join(',') + '\n';
+    });
+    
+    // ファイルをダウンロード
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', `人事評価データ_${new Date().toISOString().split('T')[0]}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    showSuccessMessage('CSVファイルをダウンロードしました');
+}
+
+// データインポート機能
+function importData() {
+    document.getElementById('fileInput').click();
+}
+
+// ファイル選択時の処理
+document.getElementById('fileInput').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            if (file.name.endsWith('.csv')) {
+                importCSV(e.target.result);
+            } else if (file.name.endsWith('.json')) {
+                importJSON(e.target.result);
+            }
+        } catch (error) {
+            alert('ファイルの読み込みに失敗しました: ' + error.message);
+        }
+    };
+    reader.readAsText(file);
+});
+
+// CSV形式のデータを取り込み
+function importCSV(csvText) {
+    const lines = csvText.split('\n');
+    const headers = lines[0].split(',');
+    
+    if (lines.length < 2) {
+        alert('有効なデータが見つかりません');
+        return;
+    }
+    
+    const evaluations = JSON.parse(localStorage.getItem('evaluations') || '[]');
+    let importCount = 0;
+    
+    for (let i = 1; i < lines.length; i++) {
+        const line = lines[i].trim();
+        if (!line) continue;
+        
+        const values = parseCSVLine(line);
+        if (values.length < 11) continue;
+        
+        const evaluation = {
+            id: Date.now() + i,
+            employeeId: values[0],
+            employeeName: values[1],
+            department: values[2],
+            position: values[3],
+            evaluationPeriod: values[4],
+            performance: parseInt(values[5]) || 3,
+            communication: parseInt(values[6]) || 3,
+            problemSolving: parseInt(values[7]) || 3,
+            teamwork: parseInt(values[8]) || 3,
+            leadership: parseInt(values[9]) || 3,
+            averageScore: parseFloat(values[10]) || 3,
+            comments: values[11] || '',
+            createdAt: new Date().toISOString()
+        };
+        
+        evaluations.push(evaluation);
+        importCount++;
+    }
+    
+    localStorage.setItem('evaluations', JSON.stringify(evaluations));
+    showSuccessMessage(`${importCount}件のデータを取り込みました`);
+    displayEvaluationList();
+}
+
+// CSVの行を解析（クォート対応）
+function parseCSVLine(line) {
+    const result = [];
+    let current = '';
+    let inQuotes = false;
+    
+    for (let i = 0; i < line.length; i++) {
+        const char = line[i];
+        const nextChar = line[i + 1];
+        
+        if (char === '"' && inQuotes && nextChar === '"') {
+            current += '"';
+            i++; // Skip next quote
+        } else if (char === '"') {
+            inQuotes = !inQuotes;
+        } else if (char === ',' && !inQuotes) {
+            result.push(current);
+            current = '';
+        } else {
+            current += char;
+        }
+    }
+    
+    result.push(current);
+    return result;
+}
+
+// JSON形式のデータを取り込み
+function importJSON(jsonText) {
+    const data = JSON.parse(jsonText);
+    if (!Array.isArray(data)) {
+        alert('JSONファイルの形式が正しくありません');
+        return;
+    }
+    
+    const evaluations = JSON.parse(localStorage.getItem('evaluations') || '[]');
+    
+    data.forEach(item => {
+        if (item.employeeId && item.employeeName) {
+            item.id = Date.now() + Math.random();
+            item.createdAt = item.createdAt || new Date().toISOString();
+            evaluations.push(item);
+        }
+    });
+    
+    localStorage.setItem('evaluations', JSON.stringify(evaluations));
+    showSuccessMessage(`${data.length}件のデータを取り込みました`);
+    displayEvaluationList();
+}
+
+// 共有機能
+function shareData() {
+    const evaluations = JSON.parse(localStorage.getItem('evaluations') || '[]');
+    
+    if (evaluations.length === 0) {
+        showSuccessMessage('共有するデータがありません');
+        return;
+    }
+    
+    // データをBase64エンコードしてURLに追加
+    const dataString = JSON.stringify(evaluations);
+    const encodedData = btoa(unescape(encodeURIComponent(dataString)));
+    const shareUrl = `${window.location.origin}${window.location.pathname}?data=${encodedData}`;
+    
+    // クリップボードにコピー
+    if (navigator.clipboard) {
+        navigator.clipboard.writeText(shareUrl).then(() => {
+            showSuccessMessage('共有URLをクリップボードにコピーしました');
+        }).catch(() => {
+            showShareModal(shareUrl);
+        });
+    } else {
+        showShareModal(shareUrl);
+    }
+}
+
+// 共有モーダルを表示
+function showShareModal(url) {
+    const modal = document.createElement('div');
+    modal.className = 'modal';
+    modal.style.display = 'block';
+    
+    modal.innerHTML = `
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2>データ共有</h2>
+            <p>以下のURLを共有してください：</p>
+            <textarea readonly style="width: 100%; height: 100px; margin: 10px 0; padding: 10px; border-radius: 5px; border: 1px solid #ddd;">${url}</textarea>
+            <button onclick="copyToClipboard('${url}')" class="submit-btn">URLをコピー</button>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    modal.querySelector('.close-modal').addEventListener('click', () => {
+        modal.remove();
+    });
+    
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            modal.remove();
+        }
+    });
+}
+
+// クリップボードにコピー（フォールバック）
+function copyToClipboard(text) {
+    const textArea = document.createElement('textarea');
+    textArea.value = text;
+    document.body.appendChild(textArea);
+    textArea.select();
+    document.execCommand('copy');
+    document.body.removeChild(textArea);
+    showSuccessMessage('URLをクリップボードにコピーしました');
+}
+
+// 印刷機能
+function printReport() {
+    window.print();
+}
+
+// ページ読み込み時に共有データをチェック
+window.addEventListener('load', () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const sharedData = urlParams.get('data');
+    
+    if (sharedData) {
+        try {
+            const decodedData = decodeURIComponent(escape(atob(sharedData)));
+            const evaluations = JSON.parse(decodedData);
+            
+            if (Array.isArray(evaluations) && evaluations.length > 0) {
+                const confirmImport = confirm(`${evaluations.length}件の共有データが見つかりました。取り込みますか？`);
+                
+                if (confirmImport) {
+                    const existingData = JSON.parse(localStorage.getItem('evaluations') || '[]');
+                    
+                    // IDの重複を避けるため、新しいIDを生成
+                    evaluations.forEach(item => {
+                        item.id = Date.now() + Math.random();
+                        item.importedAt = new Date().toISOString();
+                    });
+                    
+                    const mergedData = [...existingData, ...evaluations];
+                    localStorage.setItem('evaluations', JSON.stringify(mergedData));
+                    
+                    showSuccessMessage(`${evaluations.length}件のデータを取り込みました`);
+                    
+                    // URLパラメータを削除
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                }
+            }
+        } catch (error) {
+            console.error('共有データの読み込みに失敗しました:', error);
+        }
+    }
+});
