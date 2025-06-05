@@ -1,3 +1,23 @@
+// 成功メッセージを表示する関数
+function showSuccessMessage(message) {
+    const notification = document.createElement('div');
+    notification.className = 'success-notification';
+    notification.innerHTML = `
+        <span style="font-size: 24px; margin-right: 10px;">✓</span>
+        ${message}
+    `;
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        notification.classList.add('show');
+    }, 10);
+    
+    setTimeout(() => {
+        notification.classList.remove('show');
+        setTimeout(() => notification.remove(), 300);
+    }, 3000);
+}
+
 // ページ切り替え機能
 document.querySelectorAll('.nav-btn').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -34,7 +54,13 @@ function saveEvaluation(data) {
 document.getElementById('evaluationForm').addEventListener('submit', (e) => {
     e.preventDefault();
     
-    const formData = {
+    // アニメーション付きで保存
+    const submitBtn = e.target.querySelector('.submit-btn');
+    submitBtn.innerHTML = '<span style="display: inline-block; animation: spin 1s linear infinite;">⏳</span> 保存中...';
+    submitBtn.disabled = true;
+    
+    setTimeout(() => {
+        const formData = {
         employeeId: document.getElementById('employeeId').value,
         employeeName: document.getElementById('employeeName').value,
         department: document.getElementById('department').value,
@@ -59,10 +85,22 @@ document.getElementById('evaluationForm').addEventListener('submit', (e) => {
     formData.totalScore = scores.reduce((a, b) => a + b, 0);
     formData.averageScore = (formData.totalScore / scores.length).toFixed(1);
     
-    saveEvaluation(formData);
-    
-    alert('評価を保存しました');
-    document.getElementById('evaluationForm').reset();
+        saveEvaluation(formData);
+        
+        // 成功メッセージを表示
+        showSuccessMessage('評価を保存しました');
+        
+        // ボタンを元に戻す
+        submitBtn.innerHTML = '評価を保存';
+        submitBtn.disabled = false;
+        
+        // フォームをアニメーション付きでリセット
+        document.getElementById('evaluationForm').classList.add('form-reset');
+        setTimeout(() => {
+            document.getElementById('evaluationForm').reset();
+            document.getElementById('evaluationForm').classList.remove('form-reset');
+        }, 300);
+    }, 1000);
 });
 
 // 評価一覧を表示
@@ -123,25 +161,68 @@ function viewEvaluation(id) {
     modal.className = 'modal';
     modal.style.display = 'block';
     
+    // レーダーチャートのデータを作成
+    const chartData = [
+        { label: '業績達成度', value: evaluation.performance },
+        { label: 'コミュニケーション', value: evaluation.communication },
+        { label: '問題解決能力', value: evaluation.problemSolving },
+        { label: '協調性', value: evaluation.teamwork },
+        { label: 'リーダーシップ', value: evaluation.leadership }
+    ];
+    
     modal.innerHTML = `
         <div class="modal-content">
             <span class="close-modal">&times;</span>
             <h2>評価詳細</h2>
-            <p><strong>社員番号:</strong> ${evaluation.employeeId}</p>
-            <p><strong>氏名:</strong> ${evaluation.employeeName}</p>
-            <p><strong>部署:</strong> ${evaluation.department}</p>
-            <p><strong>職種:</strong> ${evaluation.position || '-'}</p>
-            <p><strong>評価期間:</strong> ${evaluation.evaluationPeriod}</p>
+            <div class="employee-info">
+                <div class="info-grid">
+                    <div class="info-item">
+                        <span class="info-label">社員番号</span>
+                        <span class="info-value">${evaluation.employeeId}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">氏名</span>
+                        <span class="info-value">${evaluation.employeeName}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">部署</span>
+                        <span class="info-value">${evaluation.department}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">職種</span>
+                        <span class="info-value">${evaluation.position || '-'}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">評価期間</span>
+                        <span class="info-value">${evaluation.evaluationPeriod}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">総合評価</span>
+                        <span class="info-value score-display">${evaluation.averageScore}/5</span>
+                    </div>
+                </div>
+            </div>
             <hr>
             <h3>評価項目</h3>
-            <p><strong>業績達成度:</strong> ${evaluation.performance}/5</p>
-            <p><strong>コミュニケーション能力:</strong> ${evaluation.communication}/5</p>
-            <p><strong>問題解決能力:</strong> ${evaluation.problemSolving}/5</p>
-            <p><strong>協調性:</strong> ${evaluation.teamwork}/5</p>
-            <p><strong>リーダーシップ:</strong> ${evaluation.leadership}/5</p>
-            <hr>
-            <p><strong>総合評価:</strong> ${evaluation.averageScore}/5</p>
-            <p><strong>コメント:</strong> ${evaluation.comments || 'なし'}</p>
+            <div class="evaluation-chart">
+                ${chartData.map(item => `
+                    <div class="chart-item">
+                        <span class="chart-label">${item.label}</span>
+                        <div class="chart-bar">
+                            <div class="chart-fill" style="width: ${item.value * 20}%; animation: fillBar 0.8s ease-out;">
+                                <span class="chart-value">${item.value}/5</span>
+                            </div>
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+            ${evaluation.comments ? `
+                <hr>
+                <div class="comment-section">
+                    <h3>コメント</h3>
+                    <p class="comment-text">${evaluation.comments}</p>
+                </div>
+            ` : ''}
         </div>
     `;
     
@@ -160,12 +241,48 @@ function viewEvaluation(id) {
 
 // 評価を削除
 function deleteEvaluation(id) {
-    if (!confirm('この評価を削除してもよろしいですか？')) return;
+    // カスタム確認ダイアログ
+    const confirmModal = document.createElement('div');
+    confirmModal.className = 'confirm-modal';
+    confirmModal.innerHTML = `
+        <div class="confirm-content">
+            <span class="confirm-icon">⚠️</span>
+            <h3>削除の確認</h3>
+            <p>この評価データを削除してもよろしいですか？<br>この操作は取り消せません。</p>
+            <div class="confirm-buttons">
+                <button class="confirm-yes">削除する</button>
+                <button class="confirm-no">キャンセル</button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(confirmModal);
     
-    const evaluations = JSON.parse(localStorage.getItem('evaluations') || '[]');
-    const filtered = evaluations.filter(e => e.id !== id);
-    localStorage.setItem('evaluations', JSON.stringify(filtered));
-    displayEvaluationList();
+    setTimeout(() => confirmModal.classList.add('show'), 10);
+    
+    confirmModal.querySelector('.confirm-yes').addEventListener('click', () => {
+    
+        const evaluations = JSON.parse(localStorage.getItem('evaluations') || '[]');
+        const filtered = evaluations.filter(e => e.id !== id);
+        localStorage.setItem('evaluations', JSON.stringify(filtered));
+        
+        confirmModal.classList.remove('show');
+        setTimeout(() => confirmModal.remove(), 300);
+        
+        showSuccessMessage('評価データを削除しました');
+        displayEvaluationList();
+    });
+    
+    confirmModal.querySelector('.confirm-no').addEventListener('click', () => {
+        confirmModal.classList.remove('show');
+        setTimeout(() => confirmModal.remove(), 300);
+    });
+    
+    confirmModal.addEventListener('click', (e) => {
+        if (e.target === confirmModal) {
+            confirmModal.classList.remove('show');
+            setTimeout(() => confirmModal.remove(), 300);
+        }
+    });
 }
 
 // フィルタリング機能

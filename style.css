@@ -6,9 +6,10 @@
 
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-    background-color: #f5f5f5;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: #333;
     line-height: 1.6;
+    min-height: 100vh;
 }
 
 .container {
@@ -18,16 +19,21 @@ body {
 }
 
 header {
-    background-color: #fff;
-    border-radius: 8px;
-    padding: 20px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 30px;
     margin-bottom: 30px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
 }
 
 header h1 {
-    color: #2c3e50;
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-size: 2.5em;
     margin-bottom: 20px;
+    text-align: center;
 }
 
 nav {
@@ -36,30 +42,49 @@ nav {
 }
 
 .nav-btn {
-    background-color: #ecf0f1;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
+    background: rgba(236, 240, 241, 0.8);
+    border: 2px solid transparent;
+    padding: 12px 25px;
+    border-radius: 30px;
     cursor: pointer;
-    transition: all 0.3s;
+    transition: all 0.3s ease;
     font-size: 16px;
+    font-weight: 500;
+    position: relative;
+    overflow: hidden;
 }
 
 .nav-btn:hover {
-    background-color: #bdc3c7;
+    background: rgba(255, 255, 255, 0.9);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
 }
 
 .nav-btn.active {
-    background-color: #3498db;
+    background: linear-gradient(45deg, #667eea, #764ba2);
     color: white;
+    box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
 }
 
 .page {
     display: none;
-    background-color: #fff;
-    border-radius: 8px;
-    padding: 30px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 40px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .page.active {
@@ -81,17 +106,21 @@ nav {
 .form-group select,
 .form-group textarea {
     width: 100%;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
+    padding: 12px 15px;
+    border: 2px solid #e0e6ed;
+    border-radius: 10px;
     font-size: 16px;
+    background: rgba(255, 255, 255, 0.9);
+    transition: all 0.3s ease;
 }
 
 .form-group input:focus,
 .form-group select:focus,
 .form-group textarea:focus {
     outline: none;
-    border-color: #3498db;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    transform: translateY(-1px);
 }
 
 h3 {
@@ -108,10 +137,16 @@ h3 {
 
 .evaluation-item {
     margin-bottom: 20px;
-    padding: 15px;
-    background-color: #fff;
-    border-radius: 5px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    padding: 20px;
+    background: linear-gradient(145deg, #ffffff, #f3f4f6);
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    transition: all 0.3s ease;
+}
+
+.evaluation-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.12);
 }
 
 .evaluation-item label:first-child {
@@ -132,35 +167,46 @@ h3 {
 }
 
 .rating label {
-    padding: 8px 15px;
-    background-color: #ecf0f1;
-    border-radius: 5px;
+    padding: 10px 18px;
+    background: linear-gradient(145deg, #f0f4f8, #e1e5e8);
+    border-radius: 10px;
     cursor: pointer;
-    transition: all 0.3s;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    font-weight: 600;
 }
 
 .rating input[type="radio"]:checked + label {
-    background-color: #3498db;
+    background: linear-gradient(45deg, #667eea, #764ba2);
     color: white;
+    transform: scale(1.1);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
 }
 
 .rating label:hover {
-    background-color: #bdc3c7;
+    background: linear-gradient(145deg, #e8ecef, #d4d8db);
+    transform: translateY(-2px);
 }
 
 .submit-btn {
-    background-color: #27ae60;
+    background: linear-gradient(45deg, #27ae60, #2ecc71);
     color: white;
     border: none;
-    padding: 12px 30px;
+    padding: 15px 40px;
     font-size: 18px;
-    border-radius: 5px;
+    font-weight: 600;
+    border-radius: 30px;
     cursor: pointer;
-    transition: background-color 0.3s;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 20px rgba(39, 174, 96, 0.3);
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
 .submit-btn:hover {
-    background-color: #229954;
+    background: linear-gradient(45deg, #229954, #27ae60);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(39, 174, 96, 0.4);
 }
 
 .filters {
@@ -201,7 +247,9 @@ h3 {
 }
 
 .evaluation-table tr:hover {
-    background-color: #f8f9fa;
+    background: linear-gradient(90deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+    transform: scale(1.01);
+    transition: all 0.2s ease;
 }
 
 .view-btn,
@@ -216,18 +264,36 @@ h3 {
 }
 
 .view-btn {
-    background-color: #3498db;
+    background: linear-gradient(45deg, #3498db, #5dade2);
     color: white;
+    transition: all 0.3s ease;
+}
+
+.view-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 3px 10px rgba(52, 152, 219, 0.3);
 }
 
 .edit-btn {
-    background-color: #f39c12;
+    background: linear-gradient(45deg, #f39c12, #f8c471);
     color: white;
+    transition: all 0.3s ease;
+}
+
+.edit-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 3px 10px rgba(243, 156, 18, 0.3);
 }
 
 .delete-btn {
-    background-color: #e74c3c;
+    background: linear-gradient(45deg, #e74c3c, #ec7063);
     color: white;
+    transition: all 0.3s ease;
+}
+
+.delete-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 3px 10px rgba(231, 76, 60, 0.3);
 }
 
 .analysis-container {
@@ -237,10 +303,29 @@ h3 {
 }
 
 .stats-card {
-    background-color: #f8f9fa;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    background: linear-gradient(145deg, #ffffff, #f8f9fa);
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.stats-card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(102, 126, 234, 0.1) 0%, transparent 70%);
+    transform: rotate(45deg);
+}
+
+.stats-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.15);
 }
 
 .stats-card h3 {
@@ -252,10 +337,17 @@ h3 {
 .stat-item {
     display: flex;
     justify-content: space-between;
-    padding: 10px;
-    margin-bottom: 10px;
-    background-color: #fff;
-    border-radius: 5px;
+    padding: 15px;
+    margin-bottom: 15px;
+    background: linear-gradient(145deg, #ffffff, #f8f9fa);
+    border-radius: 12px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+    transition: all 0.3s ease;
+}
+
+.stat-item:hover {
+    transform: translateX(5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.12);
 }
 
 .stat-label {
@@ -264,8 +356,11 @@ h3 {
 }
 
 .stat-value {
-    color: #3498db;
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
     font-weight: bold;
+    font-size: 1.2em;
 }
 
 .modal {
@@ -299,6 +394,206 @@ h3 {
 
 .close-modal:hover {
     color: #333;
+}
+
+/* 成功通知 */
+.success-notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: linear-gradient(45deg, #27ae60, #2ecc71);
+    color: white;
+    padding: 20px 30px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(39, 174, 96, 0.3);
+    transform: translateX(400px);
+    transition: transform 0.3s ease;
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    font-weight: 600;
+}
+
+.success-notification.show {
+    transform: translateX(0);
+}
+
+/* アニメーション */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes fillBar {
+    from { width: 0; }
+}
+
+.form-reset {
+    opacity: 0.5;
+    transition: opacity 0.3s ease;
+}
+
+/* モーダルのスタイル */
+.employee-info {
+    margin: 20px 0;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+}
+
+.info-item {
+    padding: 10px;
+    background: linear-gradient(145deg, #f8f9fa, #e9ecef);
+    border-radius: 10px;
+}
+
+.info-label {
+    display: block;
+    font-size: 0.9em;
+    color: #666;
+    margin-bottom: 5px;
+}
+
+.info-value {
+    font-size: 1.1em;
+    font-weight: 600;
+    color: #333;
+}
+
+.score-display {
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-size: 1.3em;
+}
+
+/* チャート */
+.evaluation-chart {
+    margin: 20px 0;
+}
+
+.chart-item {
+    margin-bottom: 15px;
+}
+
+.chart-label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 600;
+    color: #555;
+}
+
+.chart-bar {
+    background: #e9ecef;
+    border-radius: 10px;
+    height: 30px;
+    position: relative;
+    overflow: hidden;
+}
+
+.chart-fill {
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    height: 100%;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: 10px;
+    color: white;
+    font-weight: 600;
+    box-shadow: 0 2px 10px rgba(102, 126, 234, 0.3);
+}
+
+.comment-section {
+    margin-top: 20px;
+}
+
+.comment-text {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 10px;
+    line-height: 1.6;
+}
+
+/* 確認モーダル */
+.confirm-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.confirm-modal.show {
+    opacity: 1;
+}
+
+.confirm-content {
+    background: white;
+    padding: 40px;
+    border-radius: 20px;
+    text-align: center;
+    max-width: 400px;
+    transform: scale(0.8);
+    transition: transform 0.3s ease;
+}
+
+.confirm-modal.show .confirm-content {
+    transform: scale(1);
+}
+
+.confirm-icon {
+    font-size: 48px;
+    display: block;
+    margin-bottom: 20px;
+}
+
+.confirm-buttons {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 30px;
+}
+
+.confirm-yes,
+.confirm-no {
+    padding: 12px 30px;
+    border: none;
+    border-radius: 25px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.confirm-yes {
+    background: linear-gradient(45deg, #e74c3c, #ec7063);
+    color: white;
+}
+
+.confirm-yes:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(231, 76, 60, 0.3);
+}
+
+.confirm-no {
+    background: #e9ecef;
+    color: #333;
+}
+
+.confirm-no:hover {
+    background: #dee2e6;
+    transform: translateY(-2px);
 }
 
 @media (max-width: 768px) {
